@@ -1,0 +1,137 @@
+[
+  {
+    "id": 1,
+    "header": "Gemini API Skill-Gap Intelligence Engine",
+    "type": "AI Engine",
+    "status": "In Process",
+    "target": "95%",
+    "limit": "80%",
+    "reviewer": "Yohannes Tesfaye"
+  },
+  {
+    "id": 2,
+    "header": "ATS-Resume Parser and Tailor-Made CV Builder",
+    "type": "Resume Tool",
+    "status": "Done",
+    "target": "90%",
+    "limit": "90%",
+    "reviewer": "Yohannes Haile"
+  },
+  {
+    "id": 3,
+    "header": "Mock Interview Simulator (Text-Only Q&A)",
+    "type": "Interview",
+    "status": "In Process",
+    "target": "85%",
+    "limit": "60%",
+    "reviewer": "Zelalem Mebratu"
+  },
+  {
+    "id": 4,
+    "header": "Salary Benchmark & Market Clarity Service",
+    "type": "Market Tool",
+    "status": "In Process",
+    "target": "90%",
+    "limit": "50%",
+    "reviewer": "Yosef Getnet"
+  },
+  {
+    "id": 5,
+    "header": "Personalized Learning Path Recommendations",
+    "type": "Learning Engine",
+    "status": "Done",
+    "target": "100%",
+    "limit": "85%",
+    "reviewer": "Mr. Yonas"
+  },
+  {
+    "id": 6,
+    "header": "Prisma & PostgreSQL Schema Setup",
+    "type": "Database",
+    "status": "Done",
+    "target": "100%",
+    "limit": "100%",
+    "reviewer": "Surafel Leul"
+  },
+  {
+    "id": 7,
+    "header": "Agile Scrum Sprint Planning (4-Day Sprint)",
+    "type": "Methodology",
+    "status": "Done",
+    "target": "100%",
+    "limit": "100%",
+    "reviewer": "Yosef Getnet"
+  },
+  {
+    "id": 8,
+    "header": "UML Architecture Diagrams & SDD Documentation",
+    "type": "Documentation",
+    "status": "Done",
+    "target": "100%",
+    "limit": "100%",
+    "reviewer": "Zelalem Mebratu"
+  },
+  {
+    "id": 9,
+    "header": "Interactive Skill-Gap Radial Match Display",
+    "type": "UI Component",
+    "status": "Done",
+    "target": "95%",
+    "limit": "95%",
+    "reviewer": "Yohannes Tesfaye"
+  },
+  {
+    "id": 10,
+    "header": "Vercel Deployment & Global Edge Caching",
+    "type": "Hosting",
+    "status": "Done",
+    "target": "100%",
+    "limit": "100%",
+    "reviewer": "Mr. Yonas"
+  },
+  {
+    "id": 11,
+    "header": "Cognitive Style & Temperament Match Score",
+    "type": "Assessment",
+    "status": "In Process",
+    "target": "80%",
+    "limit": "30%",
+    "reviewer": "Surafel Leul"
+  },
+  {
+    "id": 12,
+    "header": "Mobile Compatibility via NativeWind & Expo",
+    "type": "Mobile",
+    "status": "In Process",
+    "target": "85%",
+    "limit": "45%",
+    "reviewer": "Yohannes Tesfaye"
+  },
+  {
+    "id": 13,
+    "header": "Feedback Loop Explanatory Critiques Generator",
+    "type": "AI Engine",
+    "status": "Done",
+    "target": "90%",
+    "limit": "90%",
+    "reviewer": "Yohannes Haile"
+  },
+  {
+    "id": 14,
+    "header": "Final Thesis Binding & Demo Practice Run",
+    "type": "Deliverable",
+    "status": "In Process",
+    "target": "100%",
+    "limit": "70%",
+    "reviewer": "Mr. Yonas"
+  },
+  {
+    "id": 15,
+    "header": "Ethical Protocol Algorithmic Fairness Audit",
+    "type": "Compliance",
+    "status": "Done",
+    "target": "100%",
+    "limit": "100%",
+    "reviewer": "Zelalem Mebratu"
+  }
+]
