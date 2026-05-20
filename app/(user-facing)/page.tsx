@@ -1,12 +1,10 @@
-import Header from "@/components/SharedComponents/Header";
-import Hero from "@/components/CustomComponets/Hero";
+import { Hero3 } from "@/components/CustomComponets/hero3";
 
 const HomePage = () => {
   return (
-    <div>
-      <Header />
-      <Hero />
-    </div>
+    <main className="">
+      <Hero3 />
+    </main>
   );
 };
 
