@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,13 +9,51 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { authClient } from "@/lib/auth-client";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
+  const [error, setError] = useState<string | null>();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { data, error } = await authClient.signUp.email({
+        name: fullName,
+        email,
+        password,
+        callbackURL: "/dashboard",
+      });
+
+      if (error) {
+        setError(error.message ?? "Sign up failed. Please try again.");
+        console.log("error", error);
+      } else if (data) {
+        window.location.href = "/dashboard";
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "An unexpected error occurred.";
+      setError(message);
+      console.error("signup error", err);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form
+      className={cn("flex flex-col gap-6", className)}
+      {...props}
+      onSubmit={handleSubmit}
+    >
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Create your account</h1>
@@ -23,13 +62,15 @@ export function SignupForm({
           </p>
         </div>
         <Field>
-          <FieldLabel htmlFor="name">Full Name</FieldLabel>
+          <FieldLabel htmlFor="full_name">Full Name</FieldLabel>
           <Input
-            id="name"
+            id="full_name"
             type="text"
-            placeholder="John Doe"
+            placeholder="Abebe Kebede"
             required
             className="bg-background"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
           />
         </Field>
         <Field>
@@ -37,9 +78,11 @@ export function SignupForm({
           <Input
             id="email"
             type="email"
-            placeholder="m@example.com"
+            placeholder="yohannes@gmail.com"
             required
             className="bg-background"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <FieldDescription>
             We&apos;ll use this to contact you. We will not share your email
@@ -53,6 +96,8 @@ export function SignupForm({
             type="password"
             required
             className="bg-background"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <FieldDescription>
             Must be at least 8 characters long.
@@ -69,7 +114,12 @@ export function SignupForm({
           <FieldDescription>Please confirm your password.</FieldDescription>
         </Field> */}
         <Field>
-          <Button type="submit">Create Account</Button>
+          {error && (
+            <p className="text-sm text-red-500 text-center">{error}</p>
+          )}
+          <Button type="submit" disabled={loading}>
+            {loading ? "Creating Account..." : "Create Account"}
+          </Button>
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
