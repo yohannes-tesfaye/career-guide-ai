@@ -4,6 +4,8 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ProgressProvider } from "@bprogress/next/app";
+import Provider from "./provider";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
@@ -23,9 +25,10 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", "font-sans", inter.variable)}
     >
       <body className="min-h-full flex flex-col">
-        <Toaster richColors />
-
-        <TooltipProvider>{children}</TooltipProvider>
+        <Provider>
+          <Toaster richColors />
+          <TooltipProvider>{children}</TooltipProvider>
+        </Provider>
       </body>
     </html>
   );
