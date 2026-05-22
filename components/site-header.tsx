@@ -11,8 +11,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export function SiteHeader() {
+  const router = useRouter();
+  const logout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/login");
+        },
+      },
+    });
+  };
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
@@ -24,6 +36,9 @@ export function SiteHeader() {
         <div className="flex items-center justify-between w-full">
           <h1 className="text-base font-medium">Career Mentor Dashboard</h1>
           <ModeToggle />
+          <Button variant="destructive" onClick={logout}>
+            Logout
+          </Button>
         </div>
       </div>
     </header>
