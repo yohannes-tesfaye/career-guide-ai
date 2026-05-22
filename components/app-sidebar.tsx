@@ -46,22 +46,22 @@ const data = {
     },
     {
       title: "Skill-Gap Analysis",
-      url: "/skill-gap",
+      url: "/dashboard/skill-gap",
       icon: <ListIcon />,
     },
     {
       title: "Interview Simulator",
-      url: "/interview",
+      url: "/dashboard/interview",
       icon: <ChartBarIcon />,
     },
     {
       title: "Job Explorer",
-      url: "/jobs",
+      url: "/dashboard/jobs",
       icon: <FolderIcon />,
     },
     {
       title: "Profile & Skills",
-      url: "/profile",
+      url: "/dashboard/profile",
       icon: <UsersIcon />,
     },
   ],
@@ -86,17 +86,17 @@ const data = {
   documents: [
     {
       name: "ATS Resume Builder",
-      url: "/resume",
+      url: "/dashboard/resume",
       icon: <DatabaseIcon />,
     },
     {
       name: "Salary Benchmarks",
-      url: "/salary",
+      url: "/dashboard/salary",
       icon: <FileChartColumnIcon />,
     },
     {
       name: "Project Proposal",
-      url: "/proposal",
+      url: "/dashboard/proposal",
       icon: <FileIcon />,
     },
   ],
