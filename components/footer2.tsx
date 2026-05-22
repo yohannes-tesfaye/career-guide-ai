@@ -40,29 +40,28 @@ type Props = Partial<Footer2Props>;
 
 const defaultProps: Footer2Props = {
   logo: {
-    url: "https://www.shadcnblocks.com",
-    src: "/images/logo/shadcnblocks-logo-word.svg",
-    alt: "logo",
-    title: "Shadcnblocks.com",
+    url: "/",
+    src: "/logo.png",
+    alt: "Career Guide",
+    title: "Career Guide",
   },
-  description: "Finely crafted blocks built with Shadcn UI.",
+  description:
+    "Your personalized pathway to success. Discover, plan, and achieve your career goals.",
   sections: [
     {
-      title: "Product",
+      title: "Platform",
       links: [
-        { name: "Overview", href: "#" },
+        { name: "Explore Careers", href: "#" },
+        { name: "Universities", href: "#" },
+        { name: "Roadmaps", href: "#" },
         { name: "Pricing", href: "#" },
-        { name: "Marketplace", href: "#" },
-        { name: "Features", href: "#" },
-        { name: "Integrations", href: "#" },
       ],
     },
     {
       title: "Company",
       links: [
-        { name: "About", href: "#" },
-        { name: "Team", href: "#" },
-        { name: "Blog", href: "#" },
+        { name: "About Us", href: "#" },
+        { name: "Our Team", href: "#" },
         { name: "Careers", href: "#" },
         { name: "Contact", href: "#" },
       ],
@@ -70,23 +69,21 @@ const defaultProps: Footer2Props = {
     {
       title: "Support",
       links: [
-        { name: "Help center", href: "#" },
-        { name: "Documentation", href: "#" },
-        { name: "Status", href: "#" },
+        { name: "Help Center", href: "#" },
+        { name: "FAQ", href: "#" },
         { name: "Community", href: "#" },
       ],
     },
     {
-      title: "Resources",
+      title: "Legal",
       links: [
-        { name: "Guides", href: "#" },
-        { name: "Templates", href: "#" },
-        { name: "Sales", href: "#" },
-        { name: "Advertise", href: "#" },
+        { name: "Terms of Service", href: "#" },
+        { name: "Privacy Policy", href: "#" },
+        { name: "Cookie Policy", href: "#" },
       ],
     },
   ],
-  copyright: "© 2024 Shadcnblocks.com. All rights reserved.",
+  copyright: "© 2026 Career Guide AI. All rights reserved.",
   legalLinks: [
     { name: "Terms and Conditions", href: "#" },
     { name: "Privacy Policy", href: "#" },
@@ -115,7 +112,7 @@ const Footer2 = (props: Props) => {
                     src={logo?.src}
                     alt={logo?.alt}
                     title={logo?.title}
-                    className="h-7 dark:invert"
+                    className="h-24 dark:invert"
                   />
                 </a>
               </div>

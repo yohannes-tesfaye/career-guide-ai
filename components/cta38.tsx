@@ -23,17 +23,17 @@ interface Cta38Props extends CtaSimpleProps {}
 type Props = Partial<Cta38Props>;
 
 const defaultProps: Cta38Props = {
-  heading: "Call to Action",
+  heading: "Ready to start your journey?",
   description:
-    "Get access to our collection of pre-built blocks and components today.",
+    "Join Career Guide today to get personalized career recommendations, explore universities, and shape your future.",
   buttons: {
     primary: {
-      text: "Get Access",
-      url: "https://shadcnblocks.com",
+      text: "Get Started",
+      url: "/signup",
     },
     secondary: {
-      text: "Schedule a Demo",
-      url: "https://shadcnblocks.com",
+      text: "Learn More",
+      url: "/#features",
     },
   },
 };

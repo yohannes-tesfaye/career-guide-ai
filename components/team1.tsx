@@ -17,50 +17,38 @@ interface Team1Props {
 }
 
 const Team1 = ({
-  heading = "Team",
-  description = "Our diverse team of experts brings together decades of experience in design, engineering, and product development.",
+  heading = "Meet Our Team",
+  description = "The passionate minds behind Career Guide, dedicated to helping you find your perfect career path.",
   members = [
     {
       id: "member-1",
-      name: "Sarah Chen",
-      role: "CEO & Founder",
-      avatar:
-        "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-1.webp",
+      name: "Yohannes Tesfaye",
+      role: "Co-Founder & Developer",
+      avatar: "/team/team-yohannes-tesfaye.jpg",
     },
     {
       id: "member-2",
-      name: "Marcus Rodriguez",
-      role: "CTO",
-      avatar:
-        "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-2.webp",
+      name: "Zelalem",
+      role: "Co-Founder & Developer",
+      avatar: "/team/team-zelalem.jpg",
     },
     {
       id: "member-3",
-      name: "Emily Watson",
-      role: "Head of Design",
-      avatar:
-        "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-3.webp",
+      name: "Yohannes Haile",
+      role: "Co-Founder & Developer",
+      avatar: "/team/team-yohannes-haile.jpg",
     },
     {
       id: "member-4",
-      name: "David Kim",
-      role: "Lead Engineer",
-      avatar:
-        "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-4.webp",
+      name: "Zelalem",
+      role: "Co-Founder & Developer",
+      avatar: "/team/team-zelalem.jpg",
     },
     {
       id: "member-5",
-      name: "Lisa Thompson",
-      role: "Product Manager",
-      avatar:
-        "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-5.webp",
-    },
-    {
-      id: "member-6",
-      name: "Alex Johnson",
-      role: "UX Designer",
-      avatar:
-        "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/avatar-6.webp",
+      name: "Yohannes Haile",
+      role: "Co-Founder & Developer",
+      avatar: "/team/team-yohannes-haile.jpg",
     },
   ],
   className,
@@ -75,7 +63,7 @@ const Team1 = ({
           {description}
         </p>
       </div>
-      <div className="container mt-16 grid gap-x-8 gap-y-16 md:grid-cols-2 lg:grid-cols-3">
+      <div className="container mt-16 grid gap-x-3 gap-y-16 md:grid-cols-2 lg:grid-cols-3">
         {members.map((member) => (
           <div key={member.id} className="flex flex-col items-center">
             <Avatar className="mb-4 size-20 border md:mb-5 lg:size-24">

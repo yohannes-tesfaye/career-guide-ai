@@ -7,7 +7,7 @@ const HomePage = () => {
   return (
     <main className="mx-auto">
       <Hero3 />
-      <Feature166 title="carrer Guide" description="helo" />
+      <Feature166 />
       <Team1 />
       <Cta38 />
     </main>

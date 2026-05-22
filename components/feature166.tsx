@@ -7,43 +7,43 @@ interface Feature {
 }
 
 interface Feature166Props {
-  title: string;
-  description: string;
-  feature1: Feature;
-  feature2: Feature;
-  feature3: Feature;
-  feature4: Feature;
+  title?: string;
+  description?: string;
+  feature1?: Feature;
+  feature2?: Feature;
+  feature3?: Feature;
+  feature4?: Feature;
   className?: string;
 }
 
 const Feature166 = ({
-  title = "Blocks built with Shadcn & Tailwind",
-  description = "Finely crafted components built with React, Tailwind and Shadcn UI. Developers can copy and paste these blocks directly into their project.",
+  title = "Unlock Your Potential with Career Guide",
+  description = "Discover a personalized career path tailored to your skills, interests, and goals. We bring everything you need into one platform.",
   feature1 = {
-    title: "UI/UX Design",
+    title: "AI-Powered Counseling",
     description:
-      "Creating intuitive user experiences with modern interface design principles and user-centered methodologies.",
+      "Get smart, personalized career recommendations based on advanced AI analysis of your strengths.",
     image:
       "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-1.svg",
   },
   feature2 = {
-    title: "Responsive Development",
+    title: "University Directory",
     description:
-      "Building websites that look and function perfectly across all devices and screen sizes.",
+      "Explore top universities and institutions that offer the exact programs for your desired career.",
     image:
       "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-2.svg",
   },
   feature3 = {
-    title: "Brand Integration",
+    title: "Detailed Roadmaps",
     description:
-      "Seamlessly incorporating your brand identity into every aspect of your website's design.",
+      "Step-by-step guidance on courses, skills to learn, and milestones to hit to achieve your dream job.",
     image:
       "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-3.svg",
   },
   feature4 = {
-    title: "Performance Optimization",
+    title: "Community Support",
     description:
-      "Ensuring fast loading times and smooth performance through optimized code and assets.",
+      "Connect with peers and mentors who share your career interests and can offer valuable advice.",
     image:
       "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-4.svg",
   },
