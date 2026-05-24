@@ -22,6 +22,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  isOnboarded   Boolean   @default(false)
 
   @@unique([email])
   @@map("user")
@@ -73,4 +74,217 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+// ---------------------------------------------------------
+// 1. User & Profile Module
+// ---------------------------------------------------------
+model UserProfile {
+  id           String  @id @default(cuid())
+  userId       String  @unique // No @relation to User
+  bio          String?
+  currentTitle String?
+  location     String?
+  avatarUrl    String?
+}
+
+model PersonalityAssessment {
+  id                  String   @id @default(cuid())
+  userId              String // No @relation to User
+  traitScores         Json
+  suggestedIndustries String[]
+  takenAt             DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ---------------------------------------------------------
+// 2. Resume & Skills Module
+// ---------------------------------------------------------
+model Resume {
+  id             String           @id @default(cuid())
+  userId         String // No @relation to User
+  isPrimary      Boolean          @default(false)
+  templateId     String?
+  lastModified   DateTime         @updatedAt
+  parsedData     Json?
+  workExperience WorkExperience[]
+  education      Education[]
+
+  @@index([userId])
+}
+
+model WorkExperience {
+  id                 String    @id @default(cuid())
+  resumeId           String
+  resume             Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  company            String
+  role               String
+  startDate          DateTime
+  endDate            DateTime?
+  descriptionBullets String
+}
+
+model Education {
+  id             String    @id @default(cuid())
+  resumeId       String
+  resume         Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  institution    String
+  degree         String
+  fieldOfStudy   String?
+  startDate      DateTime?
+  endDate        DateTime?
+  graduationYear Int?
+  grade          String?
+}
+
+model Skill {
+  id             String          @id @default(cuid())
+  name           String          @unique
+  category       String
+  description    String?
+  userSkills     UserSkill[]
+  requiredSkills RequiredSkill[]
+}
+
+model UserSkill {
+  id               String   @id @default(cuid())
+  userId           String // No @relation to User
+  skillId          String
+  skill            Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  proficiencyLevel Int
+  dateAcquired     DateTime @default(now())
+
+  @@unique([userId, skillId])
+}
+
+// ---------------------------------------------------------
+// 3. Market & Analysis Module
+// ---------------------------------------------------------
+model CareerRole {
+  id             String          @id @default(cuid())
+  title          String          @unique
+  description    String?
+  averageSalary  Decimal?
+  demandLevel    String?
+  requiredSkills RequiredSkill[]
+  skillGaps      SkillGap[]
+}
+
+model RequiredSkill {
+  id         String     @id @default(cuid())
+  roleId     String
+  role       CareerRole @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  skillId    String
+  skill      Skill      @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  importance Int
+}
+
+model JobListing {
+  id                String             @id @default(cuid())
+  externalId        String?            @unique
+  title             String
+  company           String
+  location          String
+  locationType      String?
+  minSalary         Decimal?
+  maxSalary         Decimal?
+  currency          String?            @default("USD")
+  description       String
+  requiredSkills    Json?
+  postedDate        DateTime?
+  source            String?
+  skillGaps         SkillGap[]
+  interviewSessions InterviewSession[]
+}
+
+model SkillGap {
+  id              String         @id @default(cuid())
+  userId          String // No @relation to User
+  roleId          String?
+  role            CareerRole?    @relation(fields: [roleId], references: [id], onDelete: SetNull)
+  jobId           String?
+  job             JobListing?    @relation(fields: [jobId], references: [id], onDelete: SetNull)
+  missingSkills   String[]
+  matchPercentage Decimal
+  reportSummary   String?
+  date            DateTime       @default(now())
+  learningPaths   LearningPath[]
+
+  @@index([userId])
+}
+
+model SalaryBenchmark {
+  id           String   @id @default(cuid())
+  jobTitle     String
+  region       String
+  percentile25 Decimal?
+  median       Decimal?
+  percentile75 Decimal?
+  lastUpdated  DateTime @default(now())
+}
+
+// ---------------------------------------------------------
+// 4. Learning & Growth Module
+// ---------------------------------------------------------
+model LearningResource {
+  id         String     @id @default(cuid())
+  title      String
+  provider   String?
+  url        String
+  skillTagId String?
+  rating     Decimal?
+  cost       Decimal?
+  duration   String?
+  planItems  PlanItem[]
+}
+
+model LearningPath {
+  id        String     @id @default(cuid())
+  userId    String // No @relation to User
+  gapId     String?
+  gap       SkillGap?  @relation(fields: [gapId], references: [id], onDelete: SetNull)
+  status    String     @default("Not Started")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  planItems PlanItem[]
+
+  @@index([userId])
+}
+
+model PlanItem {
+  id             String           @id @default(cuid())
+  planId         String
+  plan           LearningPath     @relation(fields: [planId], references: [id], onDelete: Cascade)
+  resourceId     String
+  resource       LearningResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  status         String           @default("Saved")
+  completionDate DateTime?
+}
+
+// ---------------------------------------------------------
+// 5. Interview Preparation Module
+// ---------------------------------------------------------
+model InterviewSession {
+  id           String        @id @default(cuid())
+  userId       String // No @relation to User
+  jobId        String?
+  job          JobListing?   @relation(fields: [jobId], references: [id], onDelete: SetNull)
+  jobContext   String?
+  timestamp    DateTime      @default(now())
+  overallScore Decimal?
+  interviewQAs InterviewQA[]
+
+  @@index([userId])
+}
+
+model InterviewQA {
+  id                   String           @id @default(cuid())
+  sessionId            String
+  session              InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  questionText         String
+  questionType         String?
+  userAnswerTranscript String?
+  userAnswerAudioUrl   String?
+  aiFeedback           Json?
 }
