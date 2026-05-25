@@ -1,8 +1,12 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { friendlyAiMessage } from "./messages";
 
-/** Stable models only — avoid preview IDs that 404 */
-const MODELS = ["gemini-2.0-flash", "gemini-1.5-flash"];
+/** Try newest stable models first; 1.5-* often 404 on v1beta */
+const MODELS = [
+  "gemini-2.5-flash",
+  "gemini-2.0-flash",
+  "gemini-2.0-flash-lite",
+];
 
 export type AiSource = "gemini" | "fallback";
 
@@ -62,6 +66,11 @@ export async function askJson<T>(
       return { data: parseJsonFromText<T>(text), source: "gemini" };
     } catch (e) {
       lastError = e;
+      if (process.env.NODE_ENV === "development") {
+        const name = modelName;
+        const msg = e instanceof Error ? e.message : String(e);
+        console.warn(`[gemini] ${name} failed:`, msg.slice(0, 200));
+      }
       continue;
     }
   }

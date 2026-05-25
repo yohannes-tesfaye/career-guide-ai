@@ -42,7 +42,7 @@ export function InterviewConfigForm({ onStart }: Props) {
   const loadJobs = useCallback(async () => {
     setLoadingJobs(true);
     try {
-      const res = await fetch("/api/jobs?limit=50");
+      const res = await fetch("/api/jobs?limit=50&sync=true");
       if (res.ok) {
         const data = await res.json();
         setJobs(data.jobs ?? []);
@@ -63,7 +63,10 @@ export function InterviewConfigForm({ onStart }: Props) {
     }
     const job = jobs.find((j) => j.id === id);
     if (job) {
-      setJobId(job.id);
+      // API returns slug as id when the job is not in DB; only use real JobListing.id
+      const persistedId =
+        job.externalId && job.id !== job.externalId ? job.id : undefined;
+      setJobId(persistedId);
       setJobTitle(job.title);
       setJobDescription(
         [job.title, job.company, job.location, job.description]

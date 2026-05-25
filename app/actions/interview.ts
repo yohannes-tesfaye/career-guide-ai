@@ -14,7 +14,7 @@ import {
   synthesizeSpeech,
   parseFishAudioError,
 } from "@/lib/interview/fish-audio";
-import type { FishAudioErrorCode } from "@/lib/interview/fish-audio-errors";
+import { resolveInterviewJobId } from "@/lib/interview/resolve-job-id";
 import {
   saveInterviewSessionSchema,
   type FeedbackJson,
@@ -129,12 +129,13 @@ export async function saveInterviewSession(
   }
 
   const data = parsed.data;
+  const jobId = await resolveInterviewJobId(data.jobId);
 
   try {
     const session = await prisma.interviewSession.create({
       data: {
         userId,
-        jobId: data.jobId || null,
+        jobId,
         jobTitle: data.jobTitle,
         jobContext: data.jobDescription,
         interviewType: data.interviewType,
