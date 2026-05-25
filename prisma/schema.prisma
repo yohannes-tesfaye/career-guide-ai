@@ -13,16 +13,17 @@ datasource db {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  isOnboarded   Boolean   @default(false)
+  id                String             @id
+  name              String
+  email             String
+  emailVerified     Boolean            @default(false)
+  image             String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  sessions          Session[]
+  accounts          Account[]
+  interviewSessions InterviewSession[]
+  isOnboarded       Boolean            @default(false)
 
   @@unique([email])
   @@map("user")
@@ -271,29 +272,32 @@ model PlanItem {
 // ---------------------------------------------------------
 model InterviewSession {
   id             String        @id @default(cuid())
-  userId         String // No @relation to User
-  jobId          String?
-  job            JobListing?   @relation(fields: [jobId], references: [id], onDelete: SetNull)
-  jobTitle       String?
-  jobContext     String?
-  interviewType  String        @default("text")
-  voicePreset    String?
-  timestamp      DateTime      @default(now())
-  overallScore   Decimal?
-  feedbackJson   Json?
-  transcriptJson Json?
+  userId         String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobId          String?       
+  jobListing     JobListing?   @relation(fields: [jobId], references: [id], onDelete: SetNull)
+  jobTitle       String
+  jobContext     String        @db.Text
+  interviewType  String        // Fixed to "video" for this implementation path
+  voicePreset    String?       // "talia" | "elara" | "alicia" | "caleb" | "baxter"
+  overallScore   Decimal?      @db.Decimal(5, 2)
+  feedbackJson   Json?         // Custom Application Type: FeedbackJson
+  transcriptJson Json?         // Custom Application Type: TranscriptEntry[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   interviewQAs   InterviewQA[]
 
   @@index([userId])
 }
 
 model InterviewQA {
-  id                   String           @id @default(cuid())
-  sessionId            String
-  session              InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  questionText         String
-  questionType         String?
-  userAnswerTranscript String?
-  userAnswerAudioUrl   String?
-  aiFeedback           Json?
+  id                 String           @id @default(cuid())
+  interviewSessionId String
+  interviewSession   InterviewSession @relation(fields: [interviewSessionId], references: [id], onDelete: Cascade)
+  questionIndex      Int
+  question           String           @db.Text
+  answer             String           @db.Text
+  createdAt          DateTime         @default(now())
+
+  @@index([interviewSessionId])
 }

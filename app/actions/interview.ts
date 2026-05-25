@@ -12,8 +12,7 @@ import {
 import {
   encodeAudioBase64,
   synthesizeSpeech,
-  parseFishAudioError,
-} from "@/lib/interview/fish-audio";
+} from "@/lib/interview/elevenlabs";
 import { resolveInterviewJobId } from "@/lib/interview/resolve-job-id";
 import {
   saveInterviewSessionSchema,
@@ -37,6 +36,7 @@ export async function generateInterviewTurn(params: {
   questionIndex: number;
   totalQuestions: number;
   priorQa: TranscriptEntry[];
+  difficulty?: "easy" | "medium" | "hard";
 }) {
   const userId = await requireUserId();
   if (!userId) {
@@ -50,6 +50,7 @@ export async function generateInterviewTurn(params: {
       questionIndex: params.questionIndex,
       totalQuestions: params.totalQuestions,
       priorQa: params.priorQa,
+      difficulty: params.difficulty,
     });
     return { success: true as const, ...result };
   } catch (e) {
@@ -104,13 +105,12 @@ export async function synthesizeInterviewerSpeech(params: {
       base64Audio: encodeAudioBase64(buffer),
       mimeType,
     };
-  } catch (e) {
-    const parsed = parseFishAudioError(e);
+  } catch (e: any) {
     console.error("synthesizeInterviewerSpeech:", e);
     return {
       success: false as const,
-      error: parsed.message,
-      errorCode: parsed.code,
+      error: e.message || "Voice synthesis failed",
+      errorCode: e.code || "API",
     };
   }
 }
@@ -145,9 +145,9 @@ export async function saveInterviewSession(
         transcriptJson: data.transcript as unknown as Prisma.InputJsonValue,
         interviewQAs: {
           create: data.transcript.map((entry) => ({
-            questionText: entry.question,
-            questionType: entry.questionType ?? null,
-            userAnswerTranscript: entry.answer,
+            questionIndex: entry.questionIndex,
+            question: entry.question,
+            answer: entry.answer,
           })),
         },
       },
@@ -175,11 +175,11 @@ export async function getInterviewHistory(): Promise<{
   try {
     const rows = await prisma.interviewSession.findMany({
       where: { userId },
-      orderBy: { timestamp: "desc" },
+      orderBy: { createdAt: "desc" },
       take: 50,
       select: {
         id: true,
-        timestamp: true,
+        createdAt: true,
         jobTitle: true,
         interviewType: true,
         overallScore: true,
@@ -191,7 +191,7 @@ export async function getInterviewHistory(): Promise<{
 
     const sessions: HistorySessionItem[] = rows.map((row) => ({
       id: row.id,
-      date: row.timestamp.toISOString(),
+      date: row.createdAt.toISOString(),
       jobTitle: row.jobTitle,
       interviewType: row.interviewType,
       score: row.overallScore != null ? Number(row.overallScore) : null,

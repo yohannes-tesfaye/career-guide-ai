@@ -19,12 +19,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { VOICE_PRESETS } from "@/lib/interview/voice-presets";
-import { pickQuestionCount } from "@/lib/interview/types";
+import { VOICE_PRESETS } from "@/lib/interview/voices";
 import type { InterviewConfig, InterviewType, VoicePresetId } from "@/lib/interview/types";
 import type { JobListItem } from "@/lib/jobs/types";
 import { cn } from "@/lib/utils";
-import { MessageSquare, Video } from "lucide-react";
+import { MessageSquare, Video, Settings, BrainCircuit } from "lucide-react";
 
 type Props = {
   onStart: (config: InterviewConfig) => void;
@@ -35,7 +34,9 @@ export function InterviewConfigForm({ onStart }: Props) {
   const [jobDescription, setJobDescription] = useState("");
   const [jobId, setJobId] = useState<string | undefined>();
   const [interviewType, setInterviewType] = useState<InterviewType>("text");
-  const [voicePreset, setVoicePreset] = useState<VoicePresetId>("alex");
+  const [voicePreset, setVoicePreset] = useState<VoicePresetId>("talia");
+  const [totalQuestions, setTotalQuestions] = useState<number>(5);
+  const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">("medium");
   const [jobs, setJobs] = useState<JobListItem[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(true);
 
@@ -86,7 +87,8 @@ export function InterviewConfigForm({ onStart }: Props) {
       jobId,
       interviewType,
       voicePreset: interviewType === "video" ? voicePreset : undefined,
-      totalQuestions: pickQuestionCount(),
+      totalQuestions,
+      difficulty,
     });
   };
 
@@ -168,7 +170,7 @@ export function InterviewConfigForm({ onStart }: Props) {
             type="button"
             onClick={() => setInterviewType("video")}
             className={cn(
-              "flex flex-col items-start gap-2 rounded-lg border p-4 text-left transition-colors",
+              "flex flex-col items-start gap-2 rounded-lg border p-4 text-left transition-colors cursor-pointer",
               interviewType === "video"
                 ? "border-primary bg-primary/5"
                 : "border-border hover:bg-muted/50"
@@ -177,7 +179,7 @@ export function InterviewConfigForm({ onStart }: Props) {
             <Video className="size-5" />
             <span className="font-medium">Video-based</span>
             <span className="text-xs text-muted-foreground">
-              Webcam + AI voice (Fish Audio; requires account credits). Falls back
+              Webcam + AI voice (ElevenLabs; requires API key). Falls back
               to browser voice if balance is empty.
             </span>
           </button>
@@ -188,31 +190,88 @@ export function InterviewConfigForm({ onStart }: Props) {
         <Card>
           <CardHeader>
             <CardTitle>Interviewer voice</CardTitle>
-            <CardDescription>Choose one of three preset voices (free tier).</CardDescription>
+            <CardDescription>Choose one of five preset ElevenLabs voices.</CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-3">
+          <CardContent className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
             {VOICE_PRESETS.map((preset) => (
               <button
                 key={preset.id}
                 type="button"
                 onClick={() => setVoicePreset(preset.id)}
                 className={cn(
-                  "rounded-lg border p-4 text-left transition-colors",
+                  "rounded-lg border p-4 text-left transition-colors cursor-pointer flex flex-col justify-between h-full",
                   voicePreset === preset.id
                     ? "border-primary bg-primary/5"
                     : "border-border hover:bg-muted/50"
                 )}
               >
-                <p className="font-medium">{preset.name}</p>
-                <p className="text-sm text-muted-foreground">{preset.description}</p>
-                <p className="mt-1 text-xs text-muted-foreground">{preset.style}</p>
+                <div>
+                  <p className="font-medium">{preset.name}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{preset.description}</p>
+                </div>
+                <p className="mt-3 text-[10px] uppercase tracking-wider font-semibold text-primary/80 bg-primary/10 rounded px-2 py-0.5 w-fit">{preset.style}</p>
               </button>
             ))}
           </CardContent>
         </Card>
       )}
 
-      <Button type="submit" size="lg" className="w-full">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Settings className="size-4" />
+            Session settings
+          </CardTitle>
+          <CardDescription>
+            Configure the interview length and difficulty level.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label>Question count</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {([5, 10, 15] as const).map((count) => (
+                <button
+                  key={count}
+                  type="button"
+                  onClick={() => setTotalQuestions(count)}
+                  className={cn(
+                    "rounded-lg border py-3 text-center transition-all cursor-pointer text-sm",
+                    totalQuestions === count
+                      ? "border-primary bg-primary/5 font-semibold text-primary"
+                      : "border-border hover:bg-muted/50 text-muted-foreground"
+                  )}
+                >
+                  {count} Questions
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Difficulty level</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {(["easy", "medium", "hard"] as const).map((level) => (
+                <button
+                  key={level}
+                  type="button"
+                  onClick={() => setDifficulty(level)}
+                  className={cn(
+                    "rounded-lg border py-3 text-center capitalize transition-all cursor-pointer text-sm",
+                    difficulty === level
+                      ? "border-primary bg-primary/5 font-semibold text-primary"
+                      : "border-border hover:bg-muted/50 text-muted-foreground"
+                  )}
+                >
+                  {level}
+                </button>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Button type="submit" size="lg" className="w-full cursor-pointer">
         Start interview
       </Button>
     </form>

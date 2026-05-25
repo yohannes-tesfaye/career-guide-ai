@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export type InterviewType = "text" | "video";
-export type VoicePresetId = "alex" | "sophia" | "marcus";
+export type VoicePresetId = "talia" | "elara" | "alicia" | "caleb" | "baxter";
 
 export type TranscriptEntry = {
   question: string;
@@ -25,6 +25,7 @@ export type InterviewConfig = {
   interviewType: InterviewType;
   voicePreset?: VoicePresetId;
   totalQuestions: number;
+  difficulty?: "easy" | "medium" | "hard";
 };
 
 export type InterviewQuestionResult = {
@@ -56,12 +57,13 @@ export const interviewConfigSchema = z.object({
   jobDescription: z.string().min(10),
   jobId: z.string().optional(),
   interviewType: z.enum(["text", "video"]),
-  voicePreset: z.enum(["alex", "sophia", "marcus"]).optional(),
-  totalQuestions: z.number().int().min(3).max(5),
+  voicePreset: z.enum(["talia", "elara", "alicia", "caleb", "baxter"]).optional(),
+  totalQuestions: z.number().int().min(3).max(15),
+  difficulty: z.enum(["easy", "medium", "hard"]).optional(),
 });
 
 export function pickQuestionCount(): number {
-  return Math.floor(Math.random() * 3) + 3;
+  return 5;
 }
 
 export const saveInterviewSessionSchema = z.object({
@@ -69,7 +71,7 @@ export const saveInterviewSessionSchema = z.object({
   jobDescription: z.string().min(1),
   jobId: z.string().optional(),
   interviewType: z.enum(["text", "video"]),
-  voicePreset: z.enum(["alex", "sophia", "marcus"]).optional(),
+  voicePreset: z.enum(["talia", "elara", "alicia", "caleb", "baxter"]).optional(),
   transcript: z.array(
     z.object({
       question: z.string(),

@@ -24,6 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Mic, Volume2 } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import type {
   FeedbackJson,
   InterviewConfig,
@@ -78,11 +79,12 @@ export function VideoInterviewConsole({ config, onComplete, onCancel }: Props) {
   const [pendingAudio, setPendingAudio] = useState<HTMLAudioElement | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [evaluating, setEvaluating] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const [listening, setListening] = useState(false);
   const [webcamError, setWebcamError] = useState<string | null>(null);
   const [sttSupported, setSttSupported] = useState(false);
-  const [voiceSource, setVoiceSource] = useState<"fish" | "browser" | "text">(
-    "fish"
+  const [voiceSource, setVoiceSource] = useState<"elevenlabs" | "browser" | "text">(
+    "elevenlabs"
   );
   const [ttsNotice, setTtsNotice] = useState<string | null>(null);
 
@@ -133,7 +135,7 @@ export function VideoInterviewConsole({ config, onComplete, onCancel }: Props) {
         setIsSpeaking(false);
         if (tts.errorCode === "INSUFFICIENT_BALANCE") {
           setTtsNotice(
-            "Fish Audio balance is empty. Using free browser voice, or read questions on screen. Top up at fish.audio to restore AI voices."
+            "ElevenLabs API balance is empty. Using free browser voice, or read questions on screen. Configure ELEVEN_LABS_API_KEY with credit to restore AI voices."
           );
           if (!balanceWarnedRef.current) {
             balanceWarnedRef.current = true;
@@ -141,13 +143,13 @@ export function VideoInterviewConsole({ config, onComplete, onCancel }: Props) {
           }
         } else {
           toast.error(tts.error ?? "Voice synthesis failed");
-          setTtsNotice("Fish Audio unavailable — using browser voice.");
+          setTtsNotice("ElevenLabs unavailable — using browser voice.");
         }
         await playWithBrowserVoice(text);
         return;
       }
 
-      setVoiceSource("fish");
+      setVoiceSource("elevenlabs");
       setTtsNotice(null);
 
       try {
@@ -202,6 +204,7 @@ export function VideoInterviewConsole({ config, onComplete, onCancel }: Props) {
       questionIndex,
       totalQuestions: config.totalQuestions,
       priorQa: transcript,
+      difficulty: config.difficulty,
     });
     if (!result.success) {
       toast.error(result.error ?? "Failed to load question");
@@ -223,6 +226,18 @@ export function VideoInterviewConsole({ config, onComplete, onCancel }: Props) {
   useEffect(() => {
     loadQuestion();
   }, [loadQuestion]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        cleanupAudio();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [cleanupAudio]);
 
   useEffect(() => {
     setSttSupported(!!getSpeechRecognition());
@@ -282,6 +297,12 @@ export function VideoInterviewConsole({ config, onComplete, onCancel }: Props) {
   const handleSubmitAnswer = async () => {
     if (!currentQuestion || !answer.trim()) return;
     stopListening();
+    
+    const isLast = questionIndex + 1 >= config.totalQuestions;
+    if (isLast) {
+      setProcessing(true);
+    }
+    
     setSubmitting(true);
 
     const entry: TranscriptEntry = {
@@ -294,8 +315,6 @@ export function VideoInterviewConsole({ config, onComplete, onCancel }: Props) {
     setTranscript(nextTranscript);
     setAnswer("");
     cleanupAudio();
-
-    const isLast = questionIndex + 1 >= config.totalQuestions;
 
     if (!isLast) {
       setQuestionIndex((i) => i + 1);
@@ -314,6 +333,7 @@ export function VideoInterviewConsole({ config, onComplete, onCancel }: Props) {
       toast.error(evalResult.error ?? "Evaluation failed");
       setSubmitting(false);
       setEvaluating(false);
+      setProcessing(false);
       return;
     }
 
@@ -331,11 +351,13 @@ export function VideoInterviewConsole({ config, onComplete, onCancel }: Props) {
       toast.error(saveResult.error ?? "Failed to save session");
       setSubmitting(false);
       setEvaluating(false);
+      setProcessing(false);
       return;
     }
 
     setSubmitting(false);
     setEvaluating(false);
+    setProcessing(false);
     onComplete({
       feedback: evalResult.feedback,
       source: evalResult.source,
@@ -343,16 +365,16 @@ export function VideoInterviewConsole({ config, onComplete, onCancel }: Props) {
     });
   };
 
-  const canAnswer = !loading && !isSpeaking && !submitting && !evaluating;
+  const canAnswer = !loading && !isSpeaking && !submitting && !evaluating && !processing;
 
   return (
-    <div className="space-y-4 px-4 lg:px-6">
+    <div className="relative space-y-4 px-4 lg:px-6">
       <div className="flex items-center justify-between">
         <Badge variant="outline">
           Question {Math.min(questionIndex + 1, config.totalQuestions)} of{" "}
           {config.totalQuestions}
         </Badge>
-        <Button variant="ghost" size="sm" onClick={onCancel}>
+        <Button variant="ghost" size="sm" onClick={onCancel} disabled={processing || submitting || evaluating}>
           Exit
         </Button>
       </div>
@@ -369,7 +391,7 @@ export function VideoInterviewConsole({ config, onComplete, onCancel }: Props) {
             <CardTitle className="text-base">AI Interviewer</CardTitle>
             <CardDescription>
               {isSpeaking
-                ? `Speaking (${voiceSource === "fish" ? "Fish Audio" : voiceSource === "browser" ? "browser voice" : "…"})…`
+                ? `Speaking (${voiceSource === "elevenlabs" ? "ElevenLabs" : voiceSource === "browser" ? "browser voice" : "…"})…`
                 : loading
                   ? "Loading question…"
                   : "Ready for your answer"}
@@ -434,21 +456,35 @@ export function VideoInterviewConsole({ config, onComplete, onCancel }: Props) {
             disabled={!canAnswer}
           />
           {sttSupported && (
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={listening ? stopListening : startListening}
-                disabled={!canAnswer}
-              >
-                <Mic className="mr-2 size-4" />
-                {listening ? "Stop recording" : "Start voice input"}
-              </Button>
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant={listening ? "destructive" : "outline"}
+                  size="sm"
+                  onClick={listening ? stopListening : startListening}
+                  disabled={!canAnswer}
+                  className={cn(
+                    "transition-all cursor-pointer",
+                    listening && "animate-pulse shadow-lg shadow-destructive/20 border-destructive"
+                  )}
+                >
+                  <Mic className={cn("mr-2 size-4", listening && "animate-bounce")} />
+                  {listening ? "Finish Speaking (Stop Input)" : "Start voice input"}
+                </Button>
+              </div>
+              {listening && (
+                <div className="flex items-center gap-1.5 py-1 px-2 bg-destructive/10 rounded-md border border-destructive/20 w-fit animate-in fade-in zoom-in duration-200">
+                  <span className="flex size-2 rounded-full bg-destructive animate-ping" />
+                  <span className="text-[11px] text-destructive font-medium tracking-wide uppercase">
+                    Transcribing your answer live...
+                  </span>
+                </div>
+              )}
             </div>
           )}
           <Button
-            className="w-full"
+            className="w-full cursor-pointer"
             onClick={handleSubmitAnswer}
             disabled={!canAnswer || !answer.trim()}
           >
@@ -470,6 +506,20 @@ export function VideoInterviewConsole({ config, onComplete, onCancel }: Props) {
           </Button>
         </CardContent>
       </Card>
+
+      {processing && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background/85 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="flex flex-col items-center space-y-4 text-center p-8 max-w-md bg-card border border-border shadow-2xl rounded-2xl">
+            <div className="relative flex size-20 items-center justify-center rounded-full bg-primary/10">
+              <Loader2 className="size-10 animate-spin text-primary" />
+            </div>
+            <h3 className="text-xl font-bold">Evaluating Interview</h3>
+            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed animate-pulse">
+              Gemini is grading your communication clarity and technical accuracy. Please hold on...
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

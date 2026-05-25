@@ -19,6 +19,7 @@ const QUESTION_PROMPT = (p: {
   questionIndex: number;
   totalQuestions: number;
   priorQa: TranscriptEntry[];
+  difficulty?: string;
 }) => `You are a senior technical interviewer conducting a mock interview.
 
 Job title: ${p.jobTitle}
@@ -26,6 +27,7 @@ Job description:
 ${p.jobDescription}
 
 This is question ${p.questionIndex + 1} of ${p.totalQuestions}.
+${p.difficulty ? `The question difficulty MUST be: ${p.difficulty.toUpperCase()}.\n` : ""}
 ${p.priorQa.length ? `Prior Q&A:\n${p.priorQa.map((q) => `Q: ${q.question}\nA: ${q.answer}`).join("\n\n")}` : "This is the first question."}
 
 Generate ONE realistic, targeted technical interview question appropriate for this role.
@@ -70,6 +72,7 @@ export async function generateInterviewQuestion(params: {
   questionIndex: number;
   totalQuestions: number;
   priorQa: TranscriptEntry[];
+  difficulty?: "easy" | "medium" | "hard";
 }): Promise<InterviewQuestionResult> {
   try {
     const { data, source } = await askJson<QuestionAiResponse>(
