@@ -81,7 +81,7 @@ const Navbar1 = ({
         {
           title: "Interview Simulator",
           description:
-            "Practice real-time text-based mock interviews with AI feedback",
+            "Text and video mock interviews with AI scoring and saved history",
           icon: <Sparkles className="size-5 shrink-0 text-primary" />,
           url: "/interview",
         },

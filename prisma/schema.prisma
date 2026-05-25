@@ -270,14 +270,19 @@ model PlanItem {
 // 5. Interview Preparation Module
 // ---------------------------------------------------------
 model InterviewSession {
-  id           String        @id @default(cuid())
-  userId       String // No @relation to User
-  jobId        String?
-  job          JobListing?   @relation(fields: [jobId], references: [id], onDelete: SetNull)
-  jobContext   String?
-  timestamp    DateTime      @default(now())
-  overallScore Decimal?
-  interviewQAs InterviewQA[]
+  id             String        @id @default(cuid())
+  userId         String // No @relation to User
+  jobId          String?
+  job            JobListing?   @relation(fields: [jobId], references: [id], onDelete: SetNull)
+  jobTitle       String?
+  jobContext     String?
+  interviewType  String        @default("text")
+  voicePreset    String?
+  timestamp      DateTime      @default(now())
+  overallScore   Decimal?
+  feedbackJson   Json?
+  transcriptJson Json?
+  interviewQAs   InterviewQA[]
 
   @@index([userId])
 }
