@@ -16,6 +16,8 @@ import { useRouter } from "next/navigation";
 
 export function SiteHeader() {
   const router = useRouter();
+  const { data: session } = authClient.useSession();
+
   const logout = async () => {
     await authClient.signOut({
       fetchOptions: {
@@ -34,11 +36,16 @@ export function SiteHeader() {
           className="mx-2 data-[orientation=vertical]:h-4"
         />
         <div className="flex items-center justify-between w-full">
-          <h1 className="text-base font-medium">Career Mentor Dashboard</h1>
           <ModeToggle />
-          <Button variant="destructive" onClick={logout}>
-            Logout
-          </Button>
+
+          <div className="flex gap-2 items-center">
+            <div className="text-sm">
+              <span className="font-bold">User: </span> {session?.user?.name}
+            </div>
+            <Button variant="destructive" onClick={logout}>
+              Logout
+            </Button>
+          </div>
         </div>
       </div>
     </header>
