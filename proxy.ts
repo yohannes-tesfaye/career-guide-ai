@@ -9,10 +9,13 @@ export async function proxy(request: NextRequest) {
 
     const isAuthRoute = request.nextUrl.pathname.startsWith("/login") || request.nextUrl.pathname.startsWith("/signup");
     const isOnboardingRoute = request.nextUrl.pathname.startsWith("/onboarding");
-    const isDashboardRoute = request.nextUrl.pathname.startsWith("/dashboard");
+    const isProtectedRoute =
+        request.nextUrl.pathname.startsWith("/dashboard") ||
+        request.nextUrl.pathname.startsWith("/jobs") ||
+        request.nextUrl.pathname.startsWith("/skill-gap");
 
     if(!session) {
-        if (isDashboardRoute || isOnboardingRoute) {
+        if (isProtectedRoute || isOnboardingRoute) {
             return NextResponse.redirect(new URL("/login", request.url));
         }
         return NextResponse.next();
@@ -33,5 +36,12 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/onboarding", "/login", "/signup"],
+  matcher: [
+    "/dashboard/:path*",
+    "/jobs/:path*",
+    "/skill-gap",
+    "/onboarding",
+    "/login",
+    "/signup",
+  ],
 };
