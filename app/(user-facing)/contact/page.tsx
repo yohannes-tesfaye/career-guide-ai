@@ -1,7 +1,10 @@
-import React from "react";
-
+import { Contact7 } from "@/components/contact7";
 const page = () => {
-  return <div>page</div>;
+  return (
+    <div>
+      <Contact7 />
+    </div>
+  );
 };
 
 export default page;
