@@ -32,11 +32,16 @@ export function JobDetail({ jobId }: JobDetailProps) {
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<{
+    skillGapId: string;
     matchPercentage: number;
     missingSkills: string[];
     matchedSkills: string[];
     experienceGaps: string[];
     reportSummary: string;
+    strengths?: string[];
+    recommendations?: string[];
+    source?: string;
+    warning?: string | null;
     salaryBenchmark: {
       jobTitle: string;
       region: string;
@@ -176,7 +181,9 @@ export function JobDetail({ jobId }: JobDetailProps) {
         </CardContent>
       </Card>
 
-      {analysis && <SkillGapResults {...analysis} />}
+      {analysis && (
+        <SkillGapResults {...analysis} skillGapId={analysis.skillGapId} />
+      )}
     </div>
   );
 }

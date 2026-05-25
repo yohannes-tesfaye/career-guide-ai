@@ -228,15 +228,17 @@ model SalaryBenchmark {
 // 4. Learning & Growth Module
 // ---------------------------------------------------------
 model LearningResource {
-  id         String     @id @default(cuid())
-  title      String
-  provider   String?
-  url        String
-  skillTagId String?
-  rating     Decimal?
-  cost       Decimal?
-  duration   String?
-  planItems  PlanItem[]
+  id          String     @id @default(cuid())
+  title       String
+  provider    String?
+  url         String
+  type        String?
+  description String?
+  skillTagId  String?
+  rating      Decimal?
+  cost        Decimal?
+  duration    String?
+  planItems   PlanItem[]
 }
 
 model LearningPath {
@@ -244,6 +246,8 @@ model LearningPath {
   userId    String // No @relation to User
   gapId     String?
   gap       SkillGap?  @relation(fields: [gapId], references: [id], onDelete: SetNull)
+  title     String?
+  summary   String?
   status    String     @default("Not Started")
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt

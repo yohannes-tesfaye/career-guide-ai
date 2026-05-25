@@ -9,19 +9,26 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { LearningPathPanel } from "./learning-path-panel";
 import {
   AlertCircleIcon,
   CheckCircle2Icon,
   DollarSignIcon,
+  SparklesIcon,
   TrendingUpIcon,
 } from "lucide-react";
 
 interface SkillGapResultsProps {
+  skillGapId?: string;
   matchPercentage: number;
   missingSkills: string[];
   matchedSkills: string[];
   experienceGaps: string[];
   reportSummary: string;
+  strengths?: string[];
+  recommendations?: string[];
+  source?: string;
+  warning?: string | null;
   salaryBenchmark: {
     jobTitle: string;
     region: string;
@@ -32,11 +39,16 @@ interface SkillGapResultsProps {
 }
 
 export function SkillGapResults({
+  skillGapId,
   matchPercentage,
   missingSkills,
   matchedSkills,
   experienceGaps,
   reportSummary,
+  strengths = [],
+  recommendations = [],
+  source,
+  warning,
   salaryBenchmark,
 }: SkillGapResultsProps) {
   const matchColor =
@@ -46,6 +58,11 @@ export function SkillGapResults({
         ? "text-yellow-600"
         : "text-red-600";
 
+  const showNote =
+    warning &&
+    !warning.includes("GoogleGenerativeAI") &&
+    !warning.includes("generativelanguage");
+
   return (
     <div className="space-y-4">
       <Card>
@@ -53,8 +70,17 @@ export function SkillGapResults({
           <CardTitle className="flex items-center gap-2">
             <TrendingUpIcon className="size-5" />
             Match score
+            {source && (
+              <Badge variant="outline" className="text-xs font-normal">
+                <SparklesIcon className="mr-1 size-3" />
+                {source === "gemini" ? "Gemini AI" : "Profile match"}
+              </Badge>
+            )}
           </CardTitle>
           <CardDescription>{reportSummary}</CardDescription>
+          {showNote && (
+            <p className="text-xs text-amber-600 dark:text-amber-400">{warning}</p>
+          )}
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex items-center justify-between">
@@ -66,6 +92,36 @@ export function SkillGapResults({
           <Progress value={matchPercentage} className="h-3" />
         </CardContent>
       </Card>
+
+      {strengths.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base text-green-600">Strengths</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="list-disc space-y-1 pl-5 text-sm">
+              {strengths.map((s, i) => (
+                <li key={i}>{s}</li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
+
+      {recommendations.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Recommendations</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+              {recommendations.map((r, i) => (
+                <li key={i}>{r}</li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
 
       {salaryBenchmark && (
         <Card>
@@ -113,9 +169,7 @@ export function SkillGapResults({
           </CardHeader>
           <CardContent>
             {matchedSkills.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                No direct skill matches found.
-              </p>
+              <p className="text-sm text-muted-foreground">No direct matches yet.</p>
             ) : (
               <div className="flex flex-wrap gap-1">
                 {matchedSkills.map((skill) => (
@@ -132,14 +186,12 @@ export function SkillGapResults({
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base text-destructive">
               <AlertCircleIcon className="size-4" />
-              Missing skills ({missingSkills.length})
+              Missing ({missingSkills.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
             {missingSkills.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                No skill gaps — great match!
-              </p>
+              <p className="text-sm text-muted-foreground">Great match.</p>
             ) : (
               <div className="flex flex-wrap gap-1">
                 {missingSkills.map((skill) => (
@@ -157,9 +209,6 @@ export function SkillGapResults({
         <Card>
           <CardHeader>
             <CardTitle className="text-base">Experience gaps</CardTitle>
-            <CardDescription>
-              Areas from the job description not reflected in your work history
-            </CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2 text-sm">
@@ -173,6 +222,8 @@ export function SkillGapResults({
           </CardContent>
         </Card>
       )}
+
+      {skillGapId && <LearningPathPanel skillGapId={skillGapId} />}
     </div>
   );
 }

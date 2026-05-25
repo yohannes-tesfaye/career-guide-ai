@@ -2,9 +2,7 @@
 
 import * as React from "react";
 
-import { NavDocuments } from "@/components/nav-documents";
 import { NavMain } from "@/components/nav-main";
-import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
@@ -18,89 +16,45 @@ import {
 import {
   LayoutDashboardIcon,
   ListIcon,
-  ChartBarIcon,
   FolderIcon,
   UsersIcon,
-  CameraIcon,
   FileTextIcon,
-  Settings2Icon,
-  CircleHelpIcon,
-  SearchIcon,
-  DatabaseIcon,
-  FileChartColumnIcon,
-  FileIcon,
+  BookOpenIcon,
   CommandIcon,
 } from "lucide-react";
 
-const data = {
-  user: {
-    name: "Yohannes Tesfaye",
-    email: "yohannes@gondar.edu.et",
-    avatar: "/avatars/yohannes.jpg",
+const navMain = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: <LayoutDashboardIcon />,
   },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: <LayoutDashboardIcon />,
-    },
-    {
-      title: "Skill-Gap Analysis",
-      url: "/skill-gap",
-      icon: <ListIcon />,
-    },
-    {
-      title: "Interview Simulator",
-      url: "/interview",
-      icon: <ChartBarIcon />,
-    },
-    {
-      title: "Job Explorer",
-      url: "/jobs",
-      icon: <FolderIcon />,
-    },
-    {
-      title: "Profile & Skills",
-      url: "/profile",
-      icon: <UsersIcon />,
-    },
-  ],
-  navClouds: [],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: <Settings2Icon />,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: <CircleHelpIcon />,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: <SearchIcon />,
-    },
-  ],
-  documents: [
-    {
-      name: "ATS Resume Builder",
-      url: "/resume",
-      icon: <DatabaseIcon />,
-    },
-    {
-      name: "Salary Benchmarks",
-      url: "/salary",
-      icon: <FileChartColumnIcon />,
-    },
-    {
-      name: "Project Proposal",
-      url: "/proposal",
-      icon: <FileIcon />,
-    },
-  ],
-};
+  {
+    title: "Job Explorer",
+    url: "/jobs",
+    icon: <FolderIcon />,
+  },
+  {
+    title: "Skill-Gap Analysis",
+    url: "/skill-gap",
+    icon: <ListIcon />,
+  },
+  {
+    title: "Learning Paths",
+    url: "/learning-path",
+    icon: <BookOpenIcon />,
+  },
+  {
+    title: "Resume Builder",
+    url: "/resume",
+    icon: <FileTextIcon />,
+  },
+  {
+    title: "Profile & Skills",
+    url: "/profile",
+    icon: <UsersIcon />,
+  },
+];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -121,9 +75,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

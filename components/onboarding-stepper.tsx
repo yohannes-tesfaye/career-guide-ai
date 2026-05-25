@@ -14,7 +14,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { ChevronRight, ChevronLeft, Plus, X } from "lucide-react";
+import {
+  ChevronRight,
+  ChevronLeft,
+  Plus,
+  X,
+  User,
+  Briefcase,
+  GraduationCap,
+  Award,
+  Target,
+} from "lucide-react";
 
 interface WorkExperience {
   company: string;
@@ -50,11 +60,26 @@ interface OnboardingData {
 }
 
 const steps = [
-  { id: 1, title: "Profile", description: "Basic information" },
-  { id: 2, title: "Work Experience", description: "Your professional journey" },
-  { id: 3, title: "Education", description: "Academic background" },
-  { id: 4, title: "Skills", description: "Your expertise" },
-  { id: 5, title: "Career Goals", description: "Future aspirations" },
+  { id: 1, title: "Profile", description: "Basic information", icon: User },
+  {
+    id: 2,
+    title: "Work Experience",
+    description: "Your professional journey",
+    icon: Briefcase,
+  },
+  {
+    id: 3,
+    title: "Education",
+    description: "Academic background",
+    icon: GraduationCap,
+  },
+  { id: 4, title: "Skills", description: "Your expertise", icon: Award },
+  {
+    id: 5,
+    title: "Career Goals",
+    description: "Future aspirations",
+    icon: Target,
+  },
 ];
 
 export default function OnboardingStepper() {
@@ -193,35 +218,59 @@ export default function OnboardingStepper() {
     }
   };
 
+  const progress = (currentStep / steps.length) * 100;
+  const StepIcon = steps[currentStep - 1].icon;
+
   return (
-    <div className="flex min-h-[90vh] items-center justify-center p-4">
-      <Card className="w-full max-w-2xl shadow-lg">
-        <CardHeader className="space-y-4">
-          <div className="flex items-center justify-between">
-            {steps.map((step) => (
-              <div key={step.id} className="flex items-center">
+    <div className="flex min-h-[90vh] items-center justify-center bg-gradient-to-b from-primary/10 via-background to-background p-4">
+      <Card className="w-full max-w-2xl border-0 shadow-xl">
+        <CardHeader className="space-y-6 border-b bg-muted/20">
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>
+                Step {currentStep} of {steps.length}
+              </span>
+              <span>{Math.round(progress)}% complete</span>
+            </div>
+            <div className="h-2 overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full bg-primary transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+          <div className="hidden gap-2 sm:flex">
+            {steps.map((step) => {
+              const Icon = step.icon;
+              return (
                 <div
-                  className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
-                    currentStep >= step.id
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground"
+                  key={step.id}
+                  className={`flex flex-1 items-center gap-2 rounded-lg px-2 py-1.5 text-xs ${
+                    currentStep === step.id
+                      ? "bg-primary/10 text-primary font-medium"
+                      : currentStep > step.id
+                        ? "text-muted-foreground"
+                        : "text-muted-foreground/60"
                   }`}
                 >
-                  {step.id}
+                  <Icon className="size-3.5 shrink-0" />
+                  <span className="truncate">{step.title}</span>
                 </div>
-                {step.id < steps.length && (
-                  <ChevronRight className="w-4 h-4 mx-2 text-muted-foreground" />
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
-          <div>
-            <CardTitle className="text-2xl font-bold">
-              {steps[currentStep - 1].title}
-            </CardTitle>
-            <CardDescription>
-              {steps[currentStep - 1].description}
-            </CardDescription>
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <StepIcon className="size-5" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl font-bold">
+                {steps[currentStep - 1].title}
+              </CardTitle>
+              <CardDescription>
+                {steps[currentStep - 1].description}
+              </CardDescription>
+            </div>
           </div>
         </CardHeader>
 

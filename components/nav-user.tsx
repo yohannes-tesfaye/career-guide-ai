@@ -17,7 +17,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
-import { Book, User } from "lucide-react";
+import { User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -76,14 +76,10 @@ export function NavUser() {
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link
-                href="/dashboard/documentation"
-                className="flex items-center gap-2"
-              >
-                <Book />
-                <span>Documentation</span>
+              <Link href="/profile" className="flex items-center gap-2">
+                <User className="size-4" />
+                <span>Profile</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />

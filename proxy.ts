@@ -12,7 +12,10 @@ export async function proxy(request: NextRequest) {
     const isProtectedRoute =
         request.nextUrl.pathname.startsWith("/dashboard") ||
         request.nextUrl.pathname.startsWith("/jobs") ||
-        request.nextUrl.pathname.startsWith("/skill-gap");
+        request.nextUrl.pathname.startsWith("/skill-gap") ||
+        request.nextUrl.pathname.startsWith("/resume") ||
+        request.nextUrl.pathname.startsWith("/learning-path") ||
+        request.nextUrl.pathname.startsWith("/learning-resources");
 
     if(!session) {
         if (isProtectedRoute || isOnboardingRoute) {
@@ -40,6 +43,9 @@ export const config = {
     "/dashboard/:path*",
     "/jobs/:path*",
     "/skill-gap",
+    "/resume",
+    "/learning-path/:path*",
+    "/learning-resources/:path*",
     "/onboarding",
     "/login",
     "/signup",
