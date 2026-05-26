@@ -21,6 +21,7 @@ import {
   FileTextIcon,
   BookOpenIcon,
   CommandIcon,
+  MicIcon,
 } from "lucide-react";
 
 const navMain = [
@@ -38,6 +39,11 @@ const navMain = [
     title: "Skill-Gap Analysis",
     url: "/skill-gap",
     icon: <ListIcon />,
+  },
+  {
+    title: "Interview Preparation",
+    url: "/interview",
+    icon: <MicIcon />,
   },
   {
     title: "Learning Paths",
