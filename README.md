@@ -45,7 +45,7 @@
 - **Data Visualization**: [Recharts](https://recharts.org/)
 - **PDF Generation**: [jsPDF](https://github.com/parallax/jsPDF)
 
-## 🚦 Getting Started
+## Getting Started
 
 ### Prerequisites
 
